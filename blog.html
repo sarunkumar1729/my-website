@@ -6,49 +6,66 @@
     <link rel="stylesheet" href="styles/index.css" />
     <title>Blog - techwithsarun</title>
     <style>
-      /* Blog specific styling */
       .blog-container {
-        max-width: 900px;
+        max-width: none;
         margin: auto;
         padding: 20px;
         line-height: 1.8;
       }
-
       .blog-container h2 {
         margin-bottom: 20px;
         border-bottom: 2px solid #ccc;
         padding-bottom: 5px;
       }
-
       .blog-container h3 {
         margin-top: 30px;
         color: #333;
       }
-
       .blog-container p {
         margin: 15px 0;
+        color: black;
       }
-
       .blog-container ul {
         margin: 15px 0;
         padding-left: 20px;
       }
-
       .blog-container li {
         margin: 8px 0;
+        color: black;
       }
-
       article {
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.9);
         padding: 25px;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       }
-      p{
-            color: black;
+      pre {
+        background: #1e1e1e;
+        color: #dcdcdc;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
       }
-      li{
-            color: black;
+      code {
+        font-family: Consolas, monospace;
+      }
+        /* Blog second navbar */
+        .blog-nav {
+        display: flex;
+        gap: 15px;
+        margin: 15px 0 30px 0;
+        flex-wrap: wrap;
+      }
+      .blog-nav a {
+        background: #333;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+      .blog-nav a:hover {
+        background: #555;
       }
     </style>
   </head>
@@ -68,65 +85,265 @@
 
     <div class="container blog-container">
       <section>
-        <h2>Latest Posts</h2>
+        <!-- <h2>Latest Posts</h2> -->
+
+         <!-- Blog-specific navbar -->
+         <div class="blog-nav">
+          <a href="blog-python-projects.html">Beginner Python Projects</a>
+          <a href="blog-agentic-ai.html">Agentic AI</a>
+          <a href="blog-django-deploy.html">Deploying Django Apps</a>
+          <a href="blog-ml-intro.html">Getting Started with ML</a>
+          <a href="blog-data-analytics.html">SQL for Data Analytics</a>
+        </div>
+
+
         <article>
-          <h3>Agentic AI — The Rise of Autonomous AI Agents</h3>
+          <h3>20 Beginner-Friendly Python Projects You Can Build Today</h3>
 
-          <p><strong>Introduction:</strong> In 2025, one of the most exciting shifts in artificial
-            intelligence is the rise of <em>agentic AI</em> — autonomous or
-            semi-autonomous agents that can set goals, make decisions, learn,
-            and execute tasks largely independently. These agents go beyond
-            traditional assistants or chatbots: they are beginning to act like
-            collaborators, enabling productivity, efficiency, and creativity at
-            a level previously unseen.</p>
-
-          <h3>What Exactly is Agentic AI?</h3>
-          <p>
-            Agentic AI refers to systems designed to act on behalf of humans with
-            goal-setting capabilities, planning, and action execution without
-            needing constant direction.
+          <p><strong>Introduction:</strong>  
+            If you’re learning Python, building projects is the fastest way to master it. Below are 20+ projects with sample code and explanations you can create to boost your coding journey.
           </p>
-          <p>
-            Examples include:
-          </p>
-          <ul>
-            <li>Virtual assistants that proactively organize your schedule</li>
-            <li>Code-review agents that autonomously suggest refactorings</li>
-            <li>AI tools that manage supply chains, forecast demand, or optimize logistics</li>
-          </ul>
 
-          <h3>Why It’s Trending Now</h3>
-          <ul>
-            <li><strong>Advances in AI models:</strong> More efficient models with better reasoning</li>
-            <li><strong>Demand for automation:</strong> Businesses want to offload repetitive tasks</li>
-            <li><strong>Compute improvements:</strong> Smaller, faster, cheaper models</li>
-            <li><strong>Regulatory pushes:</strong> Focus on responsible, transparent AI</li>
-          </ul>
+          <!-- 1 -->
+          <h3>1. To-Do List App</h3>
+          <pre><code class="language-python">
+tasks = []
+while True:
+    print("\n1. Add\n2. View\n3. Remove\n4. Exit")
+    choice = input("Choice: ")
+    if choice == "1":
+        tasks.append(input("Task: "))
+    elif choice == "2":
+        for i,t in enumerate(tasks,1): print(i,t)
+    elif choice == "3":
+        n = int(input("Task no: ")); tasks.pop(n-1)
+    elif choice == "4": break
+          </code></pre>
+          <p><em>Uses:</em> Lists, loops.</p>
 
-          <h3>Use Cases</h3>
-          <ul>
-            <li>Workplace: email triage, schedule optimization, workflow automation</li>
-            <li>Software engineering: code review, debugging, test automation</li>
-            <li>Education: adaptive learning agents for students</li>
-            <li>Operations: demand prediction, logistics optimization</li>
-          </ul>
+          <!-- 2 -->
+          <h3>2. Number Guessing Game</h3>
+          <pre><code class="language-python">
+import random
+num = random.randint(1,100)
+guess = None
+while guess != num:
+    guess = int(input("Guess: "))
+    print("Too low!" if guess<num else "Too high!" if guess>num else "Correct!")
+          </code></pre>
+          <p><em>Uses:</em> Random, loops, conditionals.</p>
 
-          <h3>Challenges</h3>
-          <ul>
-            <li>Trust & Safety</li>
-            <li>Explainability</li>
-            <li>Bias & fairness</li>
-            <li>Regulation & privacy</li>
-            <li>Human-in-the-loop oversight</li>
-          </ul>
+          <!-- 3 -->
+          <h3>3. Dice Roller</h3>
+          <pre><code class="language-python">
+import random
+while input("Roll dice? (y/n): ")=="y":
+    print("You rolled:", random.randint(1,6))
+          </code></pre>
+          <p><em>Uses:</em> Random, loops.</p>
+
+          <!-- 4 -->
+          <h3>4. Calculator</h3>
+          <pre><code class="language-python">
+while True:
+    a = float(input("a: "))
+    b = float(input("b: "))
+    op = input("Operator (+,-,*,/): ")
+    if op == "+": print(a+b)
+    elif op == "-": print(a-b)
+    elif op == "*": print(a*b)
+    elif op == "/": print(a/b)
+    else: break
+          </code></pre>
+          <p><em>Uses:</em> Arithmetic, conditionals.</p>
+
+          <!-- 5 -->
+          <h3>5. Rock Paper Scissors</h3>
+          <pre><code class="language-python">
+import random
+choices = ["rock","paper","scissors"]
+user = input("rock/paper/scissors: ")
+comp = random.choice(choices)
+print("Computer:", comp)
+if user==comp: print("Draw")
+elif (user=="rock" and comp=="scissors") or (user=="paper" and comp=="rock") or (user=="scissors" and comp=="paper"):
+    print("You win!")
+else: print("You lose!")
+          </code></pre>
+          <p><em>Uses:</em> Random, conditions.</p>
+
+          <!-- 6 -->
+          <h3>6. Quiz Game</h3>
+          <pre><code class="language-python">
+qs = {"Capital of India?":"Delhi","2+2":"4"}
+score=0
+for q,a in qs.items():
+    ans=input(q+": ")
+    if ans.lower()==a.lower(): score+=1
+print("Score:",score,"/",len(qs))
+          </code></pre>
+          <p><em>Uses:</em> Dictionaries, loops.</p>
+
+          <!-- 7 -->
+          <h3>7. Password Generator</h3>
+          <pre><code class="language-python">
+import random, string
+length = int(input("Length: "))
+chars = string.ascii_letters + string.digits + "!@#$%"
+pwd = "".join(random.choice(chars) for i in range(length))
+print("Generated Password:", pwd)
+          </code></pre>
+          <p><em>Uses:</em> Strings, random.</p>
+
+          <!-- 8 -->
+          <h3>8. Alarm Clock</h3>
+          <pre><code class="language-python">
+import time
+alarm = input("Enter time (HH:MM): ")
+while True:
+    if time.strftime("%H:%M") == alarm:
+        print("Wake up!")
+        break
+    time.sleep(10)
+          </code></pre>
+          <p><em>Uses:</em> Time module, loops.</p>
+
+          <!-- 9 -->
+          <h3>9. Countdown Timer</h3>
+          <pre><code class="language-python">
+import time
+sec = int(input("Seconds: "))
+while sec:
+    print(sec)
+    time.sleep(1)
+    sec -= 1
+print("Time up!")
+          </code></pre>
+          <p><em>Uses:</em> Loops, time module.</p>
+
+          <!-- 10 -->
+          <h3>10. Hangman Game</h3>
+          <pre><code class="language-python">
+import random
+words=["python","java","django"]
+word=random.choice(words)
+display=["_"]*len(word)
+tries=6
+while tries>0 and "_" in display:
+    guess=input("Guess: ")
+    if guess in word:
+        for i,l in enumerate(word):
+            if l==guess: display[i]=l
+    else: tries-=1
+    print(" ".join(display))
+print("You win!" if "_" not in display else "You lose! Word was "+word)
+          </code></pre>
+          <p><em>Uses:</em> Strings, lists.</p>
+
+          <!-- 11 -->
+          <h3>11. Weather App (API)</h3>
+          <pre><code class="language-python">
+import requests
+city=input("City: ")
+api="your_api_key"
+url=f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api}&units=metric"
+data=requests.get(url).json()
+print(city,"Temperature:",data['main']['temp'],"°C")
+          </code></pre>
+          <p><em>Uses:</em> APIs, requests.</p>
+
+          <!-- 12 -->
+          <h3>12. Expense Tracker</h3>
+          <pre><code class="language-python">
+exp={}
+while True:
+    c=input("1.Add 2.View 3.Exit: ")
+    if c=="1": exp[input("Item: ")]=float(input("Cost: "))
+    elif c=="2": 
+        print(exp,"Total=",sum(exp.values()))
+    else: break
+          </code></pre>
+          <p><em>Uses:</em> Dictionaries, sum().</p>
+
+          <!-- 13 -->
+          <h3>13. Currency Converter</h3>
+          <pre><code class="language-python">
+rate=82.5 # 1 USD = 82.5 INR
+usd=float(input("Enter USD: "))
+print("INR:",usd*rate)
+          </code></pre>
+          <p><em>Uses:</em> Variables, input.</p>
+
+          <!-- 14 -->
+          <h3>14. Email Slicer</h3>
+          <pre><code class="language-python">
+email=input("Enter email: ")
+username,domain=email.split("@")
+print("Username:",username,"\nDomain:",domain)
+          </code></pre>
+          <p><em>Uses:</em> Strings, split().</p>
+
+          <!-- 15 -->
+          <h3>15. Palindrome Checker</h3>
+          <pre><code class="language-python">
+word=input("Word: ")
+print("Palindrome" if word==word[::-1] else "Not palindrome")
+          </code></pre>
+          <p><em>Uses:</em> String slicing.</p>
+
+          <!-- 16 -->
+          <h3>16. Fibonacci Generator</h3>
+          <pre><code class="language-python">
+n=int(input("How many terms: "))
+a,b=0,1
+for i in range(n):
+    print(a,end=" ")
+    a,b=b,a+b
+          </code></pre>
+          <p><em>Uses:</em> Loops, sequence logic.</p>
+
+          <!-- 17 -->
+          <h3>17. Simple Chatbot</h3>
+          <pre><code class="language-python">
+while True:
+    user=input("You: ")
+    if "hi" in user: print("Bot: Hello!")
+    elif "bye" in user: print("Bot: Bye!"); break
+    else: print("Bot: I don’t understand.")
+          </code></pre>
+          <p><em>Uses:</em> If/else, loops.</p>
+
+          <!-- 18 -->
+          <h3>18. Flashcard App</h3>
+          <pre><code class="language-python">
+cards={"cat":"a pet","python":"a language"}
+for word,meaning in cards.items():
+    ans=input(f"What is {word}? ")
+    print("Correct" if ans==meaning else "Wrong! Answer:"+meaning)
+          </code></pre>
+          <p><em>Uses:</em> Dictionaries, loops.</p>
+
+          <!-- 19 -->
+          <h3>19. Mad Libs Game</h3>
+          <pre><code class="language-python">
+noun=input("Enter noun: ")
+verb=input("Enter verb: ")
+print(f"I love to {verb} with my {noun}.")
+          </code></pre>
+          <p><em>Uses:</em> String formatting.</p>
+
+          <!-- 20 -->
+          <h3>20. BMI Calculator</h3>
+          <pre><code class="language-python">
+w=float(input("Weight (kg): "))
+h=float(input("Height (m): "))
+bmi=w/(h*h)
+print("BMI:",round(bmi,2))
+          </code></pre>
+          <p><em>Uses:</em> Arithmetic.</p>
 
           <h3>Conclusion</h3>
-          <p>
-            Agentic AI is shaping up to be one of the defining trends in AI for
-            2025 and beyond. As autonomous agents become more capable and more
-            embedded in our tools and workflows, they have huge potential — but
-            also come with responsibility.
-          </p>
+          <p>With these 20+ projects, you’ll cover almost all Python basics — variables, loops, lists, dictionaries, APIs, strings, and conditionals. Start small and expand each project step by step into something bigger for your portfolio.</p>
         </article>
       </section>
     </div>
