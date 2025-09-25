@@ -67,6 +67,29 @@
       .blog-nav a:hover {
         background: #555;
       }
+      /* blog sub nav  */
+              /* Blog second navbar */
+      .blog-sub-nav {
+        display: flex;
+        gap: 15px;
+        margin: 15px 0 30px 0;
+        flex-wrap: wrap;
+      }
+      .blog-sub-nav a {
+        background: #555;
+        color: white;
+        padding: 3px 7px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+      .blog-sub-nav a:hover {
+        background: #555;
+      }
+      a.current{
+        background-color: lightblue;
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -77,9 +100,9 @@
     </header>
 
     <nav>
+      <a href="blog.html">Blog</a>
+      <!-- <a href="projects.html">Projects</a> -->
       <a href="about.html">About</a>
-      <a href="projects.html">Projects</a>
-      <a href="blog.html" class="active">Blog</a>
       <a href="gallery.html">Gallery</a>
     </nav>
 
@@ -89,13 +112,20 @@
 
          <!-- Blog-specific navbar -->
          <div class="blog-nav">
-          <a href="blog-python-projects.html">Beginner Python Projects</a>
-          <a href="blog-agentic-ai.html">Agentic AI</a>
-          <a href="blog-django-deploy.html">Deploying Django Apps</a>
-          <a href="blog-ml-intro.html">Getting Started with ML</a>
-          <a href="blog-data-analytics.html">SQL for Data Analytics</a>
+          <a href="blog.html" class="current">Python</a>
+          <a href="ML1.html">Machine Learning</a>
+          <a href="SQL1.html">SQL</a>
+          <a href="DL1.html">Deep Learning</a>
+          <a href="R1.html">R</a>
         </div>
 
+        <div class="blog-sub-nav">
+          <a href="blog.html">Basics</a>
+          <a href="ML1.html">Projects</a>
+          <!-- <a href="SQL1.html">Libraries</a> -->
+          <!-- <a href="DL1.html">Deep Learning</a> -->
+          <!-- <a href="R1.html">R</a> -->
+        </div>
 
         <article>
           <h3>20 Beginner-Friendly Python Projects You Can Build Today</h3>

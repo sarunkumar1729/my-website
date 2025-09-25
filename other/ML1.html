@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Linear Regression — Interactive ML with Theory</title>
+
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      color: #e6faff;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 1200px;
+      max-width: 100%;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      animation: fadeIn 1s ease;
+    }
+    h1 { font-size: 24px; color: #00f7ff; margin: 0 0 10px; }
+    h2 { font-size: 18px; color: #bde9ff; margin: 14px 0 8px; }
+    p { font-size: 14px; line-height: 1.6; color: #c8e6f2; }
+    .controls { display: flex; flex-direction: column; gap: 12px; }
+    input, button {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+    }
+    .btn {
+      background: linear-gradient(90deg, #00f7ff, #0077ff);
+      color: #001019;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,200,255,0.4);
+    }
+    .btn.ghost { background: transparent; border: 1px solid #00f7ff; color: #00f7ff; }
+    .badge {
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      margin: 4px;
+      display: inline-block;
+      font-weight: bold;
+      color: #fff;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 6px #00f7ff; }
+      to { box-shadow: 0 0 20px #0077ff; }
+    }
+    canvas { background: rgba(0,0,0,0.2); border-radius: 12px; }
+    pre { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; color: #bfefff; overflow:auto; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Interactive Demo -->
+    <div class="grid">
+      <!-- Controls -->
+      <div class="card">
+        <h1>Interactive ML: Linear Regression</h1>
+        <p>Train <code>y = 2x + 1</code> with noise using TensorFlow.js. Adjust settings and see the model learn.</p>
+
+        <div class="controls">
+          <label>Dataset size: <span id="sizeLabel">100</span></label>
+          <input id="sizeRange" type="range" min="30" max="1000" value="100">
+          <label>Noise: <span id="noiseLabel">0.5</span></label>
+          <input id="noiseRange" type="range" min="0" max="3" step="0.1" value="0.5">
+          <label>Learning rate</label>
+          <input id="lrInput" type="number" step="0.01" value="0.1">
+          <label>Epochs</label>
+          <input id="epochsInput" type="number" value="50">
+
+          <button id="genBtn" class="btn">Generate Data</button>
+          <button id="trainBtn" class="btn">Train Model</button>
+          <button id="resetBtn" class="btn ghost">Reset</button>
+
+          <h2>Predict</h2>
+          <input id="xInput" type="number" placeholder="Enter x">
+          <button id="predBtn" class="btn ghost">Predict</button>
+          <div id="prediction" class="badge">Prediction: —</div>
+        </div>
+      </div>
+
+      <!-- Visuals -->
+      <div class="card">
+        <h2>Training Progress</h2>
+        <canvas id="lossChart"></canvas>
+        <div style="margin-top:12px;">
+          <span class="badge">Loss: <span id="lossValue">—</span></span>
+          <span class="badge">Weight: <span id="weight">—</span></span>
+          <span class="badge">Bias: <span id="bias">—</span></span>
+        </div>
+        <h2>Logs</h2>
+        <pre id="log">Ready. Generate data to start.</pre>
+      </div>
+    </div>
+
+    <!-- Theory Section -->
+    <div class="card">
+      <h1>Theory Foundation: Linear Regression</h1>
+
+      <h2>1. What is Linear Regression?</h2>
+      <p>
+        Linear regression is one of the simplest machine learning algorithms. It models the relationship between input <code>x</code> and output <code>y</code> as:
+      </p>
+      <p style="text-align:center;"><strong>y = wx + b</strong></p>
+      <p>
+        - <code>w</code> is the weight (slope) <br>
+        - <code>b</code> is the bias (intercept)
+      </p>
+
+      <h2>2. Training Objective</h2>
+      <p>
+        We want to find the best <code>w</code> and <code>b</code> such that predictions <code>ŷ</code> are close to the true values <code>y</code>.
+      </p>
+      <p><strong>Loss function:</strong></p>
+      <p style="text-align:center;"><strong>MSE = (1/n) Σ (yᵢ - ŷᵢ)²</strong></p>
+      <p>
+        Mean Squared Error (MSE) penalizes large errors more heavily, making it a common choice for regression.
+      </p>
+
+      <h2>3. Optimization with Gradient Descent</h2>
+      <p>
+        We minimize the loss using <strong>gradient descent</strong>.  
+        The parameters are updated as:
+      </p>
+      <p style="text-align:center;">
+        w ← w - η ∂L/∂w <br>
+        b ← b - η ∂L/∂b
+      </p>
+      <p>
+        where <code>η</code> is the learning rate.
+      </p>
+
+      <h2>4. Why Noise?</h2>
+      <p>
+        Real-world data is never perfect. Adding random noise simulates real datasets and ensures the model learns the general pattern instead of memorizing.
+      </p>
+
+      <h2>5. Expected Outcome</h2>
+      <p>
+        Given data generated from <code>y = 2x + 1</code>, the model should learn <code>w ≈ 2</code> and <code>b ≈ 1</code> after training.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const sizeRange=document.getElementById("sizeRange"),sizeLabel=document.getElementById("sizeLabel");
+    const noiseRange=document.getElementById("noiseRange"),noiseLabel=document.getElementById("noiseLabel");
+    const lrInput=document.getElementById("lrInput"),epochsInput=document.getElementById("epochsInput");
+    const genBtn=document.getElementById("genBtn"),trainBtn=document.getElementById("trainBtn"),resetBtn=document.getElementById("resetBtn");
+    const predBtn=document.getElementById("predBtn"),xInput=document.getElementById("xInput"),prediction=document.getElementById("prediction");
+    const lossValue=document.getElementById("lossValue"),weightSpan=document.getElementById("weight"),biasSpan=document.getElementById("bias");
+    const logEl=document.getElementById("log");
+
+    sizeRange.oninput=()=>sizeLabel.textContent=sizeRange.value;
+    noiseRange.oninput=()=>noiseLabel.textContent=noiseRange.value;
+
+    let xsTensor,ysTensor,model;
+
+    // Chart.js
+    const ctx=document.getElementById("lossChart").getContext("2d");
+    const lossChart=new Chart(ctx,{
+      type:"line",
+      data:{labels:[],datasets:[{label:"Loss",data:[],borderColor:"#00f7ff",tension:0.3}]},
+      options:{responsive:true,scales:{x:{title:{display:true,text:"Epoch"}},y:{title:{display:true,text:"Loss"}}}}
+    });
+
+    function appendLog(msg){logEl.textContent+="\n"+msg;logEl.scrollTop=logEl.scrollHeight;}
+    function randNormal(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+    function generateData(n=100,noise=0.5){
+      const data=[];
+      for(let i=0;i<n;i++){const x=Math.random()*10-5;const y=2*x+1+randNormal()*noise;data.push({x,y});}
+      if(xsTensor)xsTensor.dispose();if(ysTensor)ysTensor.dispose();
+      xsTensor=tf.tensor2d(data.map(d=>[d.x]));ysTensor=tf.tensor2d(data.map(d=>[d.y]));
+      appendLog(`Generated ${n} points (noise=${noise})`);
+    }
+
+    function buildModel(lr=0.1){
+      if(model)model.dispose();
+      model=tf.sequential();
+      model.add(tf.layers.dense({inputShape:[1],units:1}));
+      model.compile({optimizer:tf.train.sgd(lr),loss:"meanSquaredError"});
+      appendLog("Model built.");
+    }
+
+    async function trainModel(epochs=50){
+      if(!xsTensor){appendLog("Generate data first.");return;}
+      if(!model)buildModel(parseFloat(lrInput.value));
+      lossChart.data.labels=[];lossChart.data.datasets[0].data=[];lossChart.update();
+      await model.fit(xsTensor,ysTensor,{
+        epochs,
+        callbacks:{onEpochEnd:(epoch,logs)=>{
+          lossValue.textContent=logs.loss.toFixed(4);
+          lossChart.data.labels.push(epoch+1);
+          lossChart.data.datasets[0].data.push(logs.loss);
+          lossChart.update();
+          updateParams();
+        }}
+      });
+      appendLog("Training complete.");
+    }
+
+    function updateParams(){
+      const [w,b]=model.getWeights();
+      const wVal=w.dataSync()[0],bVal=b.dataSync()[0];
+      weightSpan.textContent=wVal.toFixed(3);
+      biasSpan.textContent=bVal.toFixed(3);
+    }
+
+    function predict(x){
+      if(!model)return null;
+      const t=tf.tensor2d([[parseFloat(x)]]);
+      const y=model.predict(t).dataSync()[0];t.dispose();return y;
+    }
+
+    genBtn.onclick=()=>generateData(parseInt(sizeRange.value),parseFloat(noiseRange.value));
+    trainBtn.onclick=()=>trainModel(parseInt(epochsInput.value));
+    resetBtn.onclick=()=>{if(model)model.dispose();model=null;appendLog("Model reset.");};
+    predBtn.onclick=()=>{
+      if(xInput.value==="")return;
+      const y=predict(parseFloat(xInput.value));
+      prediction.textContent="Prediction: "+y.toFixed(3);
+      appendLog(`Predicted y for x=${xInput.value} → ${y.toFixed(3)}`);
+    };
+  </script>
+</body>
+</html>

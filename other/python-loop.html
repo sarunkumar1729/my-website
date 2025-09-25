@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Python Loop 3D with Break & Continue</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0b0f1a;
+      color: #eaf0ff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #scene-container {
+      flex: 2;
+    }
+    #console {
+      flex: 1;
+      background: #111624;
+      padding: 20px;
+      font-family: monospace;
+      overflow-y: auto;
+      border-left: 2px solid #222a3a;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .meta { color: #8fa3c6; font-size: 14px; }
+    button, select {
+      margin-top: 10px;
+      padding: 10px 16px;
+      background: linear-gradient(90deg, #7c5cff, #3ecbff);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #041028;
+      font-weight: bold;
+      box-shadow: 0 4px 16px rgba(124,92,255,0.3);
+    }
+    select { color: #041028; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="scene-container"></div>
+  <div id="console">
+    <h2>Loop Console</h2>
+    <div class="meta">Choose loop type:</div>
+    <select id="loopType">
+      <option value="normal">Normal Loop</option>
+      <option value="continue">Loop with continue</option>
+      <option value="break">Loop with break</option>
+    </select>
+    <div id="output"></div>
+    <button id="runBtn">▶ Run Loop</button>
+  </div>
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+
+  <script>
+    // Setup Scene
+    const container = document.getElementById("scene-container");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 3, 8);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.PointLight(0xffffff, 1.2);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+
+    // List items as cubes
+    const items = ["apple", "banana", "cherry", "date", "elderberry"];
+    const cubes = [];
+    const defaultMat = new THREE.MeshPhongMaterial({ color: 0x3ecbff });
+    const processedMat = new THREE.MeshPhongMaterial({ color: 0x00ff99, emissive: 0x007755 });
+    const skippedMat = new THREE.MeshPhongMaterial({ color: 0x555577, emissive: 0x222233 });
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+    items.forEach((item, i) => {
+      const cube = new THREE.Mesh(geometry, defaultMat.clone());
+      cube.position.x = (i - 2) * 2.2;
+      cube.userData.label = item;
+      scene.add(cube);
+      cubes.push(cube);
+
+      // Label
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "#fff";
+      ctx.fillText(item, 10, 30);
+      const texture = new THREE.CanvasTexture(canvas);
+      const labelMat = new THREE.SpriteMaterial({ map: texture });
+      const sprite = new THREE.Sprite(labelMat);
+      sprite.scale.set(2, 1, 1);
+      sprite.position.set(cube.position.x, -1.2, 0);
+      scene.add(sprite);
+    });
+
+    // Pointer sphere
+    const sphereGeo = new THREE.SphereGeometry(0.3, 32, 32);
+    const sphereMat = new THREE.MeshPhongMaterial({ color: 0x7c5cff, emissive: 0x7c5cff });
+    const pointer = new THREE.Mesh(sphereGeo, sphereMat);
+    pointer.position.set(cubes[0].position.x, 1.5, 0);
+    scene.add(pointer);
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Console output
+    const output = document.getElementById("output");
+    function logLine(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    // Bounce effect
+    function bounce(cube) {
+      let up = true, steps = 0;
+      const bounce = setInterval(() => {
+        cube.position.y += up ? 0.05 : -0.05;
+        steps++;
+        if (steps > 10) { up = false; }
+        if (steps > 20) { clearInterval(bounce); cube.position.y = 0; }
+      }, 40);
+    }
+
+    // Run Loop
+    let running = false;
+    document.getElementById("runBtn").addEventListener("click", async () => {
+      if (running) return;
+      running = true;
+      output.innerHTML = "";
+      cubes.forEach(c => c.material = defaultMat.clone()); // reset colors
+
+      const loopType = document.getElementById("loopType").value;
+
+      for (let i = 0; i < cubes.length; i++) {
+        const cube = cubes[i];
+        pointer.position.x = cube.position.x;
+
+        if (loopType === "continue" && i === 2) {  // skip index 2
+          cube.material = skippedMat.clone();
+          logLine(`Skipping ${cube.userData.label} (continue)`);
+          await new Promise(r => setTimeout(r, 1200));
+          continue;
+        }
+
+        if (loopType === "break" && i === 3) {  // stop at index 3
+          logLine(`Breaking at ${cube.userData.label} (break)`);
+          break;
+        }
+
+        // Process normally
+        cube.material = processedMat.clone();
+        bounce(cube);
+        logLine(`Processing: ${cube.userData.label}`);
+
+        await new Promise(r => setTimeout(r, 1500));
+      }
+      running = false;
+    });
+
+    // Resize handler
+    window.addEventListener("resize", () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  </script>
+</body>
+</html>

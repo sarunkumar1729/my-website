@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>3D Decision Tree Animation</title>
+  <style>
+    body{margin:0;overflow:hidden;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);}
+    #ui{
+      position:absolute;top:15px;left:15px;
+      background:rgba(0,0,0,0.5);
+      padding:12px;border-radius:8px;
+      color:#fff;font-family:sans-serif;
+      width:250px;
+    }
+    h3{margin:0 0 8px 0;color:#00e6ff;font-size:16px}
+    label{font-size:13px}
+    select{width:100%;margin:6px 0;padding:6px;border-radius:6px;border:none}
+    button{margin:4px 4px 0 0;padding:6px 10px;border:none;border-radius:6px;background:#00e6ff;color:#000;font-weight:bold;cursor:pointer}
+  </style>
+</head>
+<body>
+<div id="ui">
+  <h3>Decision Tree</h3>
+  <label>Choose input example</label>
+  <select id="example">
+    <option value="A">Example A (feature1=2.5, feature2=0.3)</option>
+    <option value="B">Example B (feature1=7.1, feature2=1.2)</option>
+    <option value="C">Example C (feature1=4.2, feature2=2.8)</option>
+  </select>
+  <div>
+    <button id="playBtn">Play</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+  <p style="font-size:12px;color:#ccc;margin-top:6px">💡 Drag to rotate, scroll to zoom</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,1000);
+camera.position.set(0,8,25);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+
+// Lights
+scene.add(new THREE.AmbientLight(0x444444));
+const dir=new THREE.DirectionalLight(0xffffff,0.8);dir.position.set(10,20,10);scene.add(dir);
+
+// Helper to create nodes
+function makeNode(x,y,isLeaf,label){
+  const color=isLeaf?"#ffd166":"#00e6ff";
+  const emissive=isLeaf?"#ff6b6b":"#0066ff";
+  const geo=new THREE.SphereGeometry(isLeaf?1:1.2,32,32);
+  const mat=new THREE.MeshPhongMaterial({color,emissive,shininess:100});
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(x,y,0);
+  scene.add(mesh);
+  // label
+  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=64;
+  const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.font='22px sans-serif';ctx.textAlign='center';ctx.fillText(label,128,40);
+  const tex=new THREE.CanvasTexture(canvas);
+  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+  spr.scale.set(6,1.5,1);spr.position.set(x,y-2,0);scene.add(spr);
+  return mesh;
+}
+function connect(a,b){
+  const pts=[a.position,b.position];
+  const geo=new THREE.BufferGeometry().setFromPoints(pts);
+  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x66d9ff}));
+  scene.add(line);
+}
+
+// Build tree nodes
+const root=makeNode(0,6,false,"feature1 ≤ 5?");
+const left=makeNode(-6,0,false,"feature2 ≤ 1?");
+const right=makeNode(6,0,false,"feature1 ≤ 8?");
+const l1=makeNode(-9,-6,true,"Class 0");
+const l2=makeNode(-3,-6,true,"Class 1");
+const l3=makeNode(3,-6,true,"Class 1");
+const l4=makeNode(9,-6,true,"Class 2");
+
+// Connect edges
+connect(root,left);connect(root,right);
+connect(left,l1);connect(left,l2);
+connect(right,l3);connect(right,l4);
+
+// Particle
+const particle=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,16),new THREE.MeshBasicMaterial({color:0xffffff}));
+scene.add(particle);particle.visible=false;
+
+// Example inputs
+const examples={
+  A:{feature1:2.5,feature2:0.3},  // goes root->left->l1
+  B:{feature1:7.1,feature2:1.2},  // goes root->right->l4
+  C:{feature1:4.2,feature2:2.8}   // goes root->left->l2
+};
+
+// Decide path for an example
+function decidePath(ex){
+  if(ex.feature1<=5){
+    if(ex.feature2<=1) return [root,left,l1];
+    else return [root,left,l2];
+  }else{
+    if(ex.feature1<=8) return [root,right,l3];
+    else return [root,right,l4];
+  }
+}
+
+// Animation state
+let curve=null,t=0,playing=false;
+function startTraversal(exampleKey){
+  const path=decidePath(examples[exampleKey]);
+  curve=new THREE.CatmullRomCurve3(path.map(n=>n.position.clone().add(new THREE.Vector3(0,0,1))));
+  t=0;playing=true;particle.visible=true;
+}
+function resetTraversal(){playing=false;particle.visible=false;}
+
+// UI
+document.getElementById("playBtn").onclick=()=>{
+  const ex=document.getElementById("example").value;
+  startTraversal(ex);
+};
+document.getElementById("resetBtn").onclick=()=>resetTraversal();
+
+// Loop
+let last=performance.now();
+function animate(now){
+  requestAnimationFrame(animate);
+  controls.update();
+  if(playing && curve){
+    const dt=(now-last)/1000;last=now;
+    t+=0.3*dt;
+    if(t>=1){t=1;playing=false;}
+    const pos=curve.getPoint(t);
+    particle.position.copy(pos);
+  } else last=now;
+  renderer.render(scene,camera);
+}
+animate(performance.now());
+
+window.addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});
+</script>
+</body>
+</html>

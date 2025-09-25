@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Python Operators — Animated Guide</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#60a5fa;--muted:#94a3b8;--ok:#22c55e;--bad:#ef4444}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#071024 0%,#071428 60%);color:#e6eef8;padding:28px}
+    header{display:flex;gap:20px;align-items:center;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .subtitle{color:var(--muted);font-size:13px}
+
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:20px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    .card h2{margin:0 0 8px 0;font-size:16px}
+    .ops{display:flex;flex-wrap:wrap;gap:10px}
+    .op{background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;min-width:110px;cursor:pointer;user-select:none}
+    .op:hover{transform:translateY(-4px);transition:transform .18s}
+    pre{background:#021021;padding:12px;border-radius:8px;overflow:auto;font-size:13px}
+
+    /* Animation canvas */
+    .canvas{background:linear-gradient(180deg,#041025,#05142a);border-radius:10px;padding:18px;min-height:480px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
+    .scene{width:100%;max-width:740px;height:280px;background:linear-gradient(90deg,#022 0%,#012b3a 100%);border-radius:8px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+
+    .float{position:absolute;left:50%;transform:translateX(-50%);top:22px;color:var(--muted);font-size:13px}
+
+    /* Numbers */
+    .box{width:92px;height:56px;border-radius:8px;background:linear-gradient(180deg,#0b2540,#08203a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#dbeafe;border:1px solid rgba(255,255,255,0.04)}
+    .row{display:flex;gap:12px;align-items:center;justify-content:center}
+
+    /* arrows */
+    .arrow{width:60px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);position:relative}
+    .arrow:after{content:'';position:absolute;right:0;top:-6px;border-left:8px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent}
+
+    /* true / false badge */
+    .badge{padding:6px 10px;border-radius:999px;font-weight:700}
+    .badge.true{background:linear-gradient(90deg,rgba(34,197,94,0.12),rgba(34,197,94,0.06));color:var(--ok);}
+    .badge.false{background:linear-gradient(90deg,rgba(239,68,68,0.08),rgba(239,68,68,0.04));color:var(--bad);}
+
+    /* bit boxes */
+    .bits{display:flex;gap:6px}
+    .bit{width:26px;height:36px;border-radius:6px;background:#012b3a;display:flex;align-items:center;justify-content:center;font-weight:700;border:1px solid rgba(255,255,255,0.03)}
+
+    /* controls */
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{background:linear-gradient(180deg,#143b6b,#0d2a4a);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);color:#e6eef8;cursor:pointer}
+    button:active{transform:translateY(1px)}
+
+    footer{color:var(--muted);font-size:13px;margin-top:12px}
+
+    /* responsive */
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.scene{height:320px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Python Operators — Animated Guide</h1>
+      <div class="subtitle">Interactive explanations & animated examples for beginners</div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Pick an operator group</h2>
+      <div class="ops">
+        <div class="op" data-group="arithmetic">Arithmetic (+ - * / // % **) </div>
+        <div class="op" data-group="assignment">Assignment (=, +=, -= ...)</div>
+        <div class="op" data-group="comparison">Comparison (==, !=, &lt;, &gt;, &lt;=, &gt;=)</div>
+        <div class="op" data-group="logical">Logical (and, or, not)</div>
+        <div class="op" data-group="bitwise">Bitwise (&, |, ^, ~, <<, >>)</div>
+        <div class="op" data-group="identity">Identity (is, is not)</div>
+        <div class="op" data-group="membership">Membership (in, not in)</div>
+        <div class="op" data-group="ternary">Ternary (x if cond else y)</div>
+      </div>
+
+      <hr style="margin:12px 0;border-color:rgba(255,255,255,0.03)" />
+      <div>
+        <strong>Code you can copy:</strong>
+        <pre id="pycode"># Select an operator group on the right to see example code</pre>
+      </div>
+
+      <div style="margin-top:10px">
+        <strong>Tip:</strong> These examples run conceptually — paste them into a Python REPL (like IDLE, VS Code or an online REPL) to try for real.
+      </div>
+    </div>
+
+    <div class="card canvas" id="canvasCard">
+      <div class="float" id="groupTitle">Choose a group →</div>
+      <div class="scene" id="scene">
+        <!-- dynamic scene elements appear here -->
+      </div>
+
+      <div class="controls" style="margin-top:6px">
+        <button id="runBtn">Run animation</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+      <footer id="explain">Click an operator group to see a visual explanation and example code.</footer>
+    </div>
+  </div>
+
+  <script>
+    // Structured content: each group has explanation, code, and a render function
+    const groups = {
+      arithmetic: {
+        title: 'Arithmetic operators',
+        explain: 'Use to do math. + - * / // (floor div) % (modulo) ** (power).',
+        code: `# arithmetic examples\na=7\nb=3\nprint('a+b=', a+b)\nprint('a-b=', a-b)\nprint('a*b=', a*b)\nprint('a/b=', a/b)\nprint('a//b=', a//b)\nprint('a%b=', a%b)\nprint('a**b=', a**b)`,
+        render(scene){
+          scene.innerHTML = '';
+          const top = document.createElement('div'); top.className='row'; top.style.position='absolute'; top.style.top='28px'; top.style.left='50%'; top.style.transform='translateX(-50%)';
+          const A = document.createElement('div'); A.className='box'; A.textContent='7';
+          const plus = document.createElement('div'); plus.className='box'; plus.textContent='+'; plus.style.opacity=0.9
+          const B = document.createElement('div'); B.className='box'; B.textContent='3';
+          top.append(A, plus, B);
+          scene.appendChild(top);
+
+          const resultRow = document.createElement('div'); resultRow.className='row'; resultRow.style.position='absolute'; resultRow.style.bottom='36px'; resultRow.style.left='50%'; resultRow.style.transform='translateX(-50%)';
+          const resBox = document.createElement('div'); resBox.className='box'; resBox.textContent='result'; resultRow.append(resBox);
+          scene.appendChild(resultRow);
+
+          // animate addition then other ops sequentially
+          const ops = ['+','-','*','/','//','%','**'];
+          let i=0;
+          function step(){
+            if(i>=ops.length) return;
+            plus.textContent = ops[i];
+            // compute here in JS to show result (same numerically for these ops)
+            let val;
+            if(ops[i]==='+') val=7+3;
+            if(ops[i]==='-') val=7-3;
+            if(ops[i]==='*') val=7*3;
+            if(ops[i]=='/') val=(7/3).toFixed(3);
+            if(ops[i]=='//') val=Math.floor(7/3);
+            if(ops[i]=='%') val=7%3;
+            if(ops[i]=='**') val=Math.pow(7,3);
+            resBox.textContent=String(val);
+            i++;
+            setTimeout(step, 1300);
+          }
+          step();
+        }
+      },
+
+      assignment:{
+        title:'Assignment operators',
+        explain:'Assign values to variables. a = b, or update in place: a += 2 (same as a = a + 2).',
+        code:`x = 5\nx += 3  # x becomes 8\nx *= 2  # x becomes 16\nprint(x)`,
+        render(scene){
+          scene.innerHTML='';
+          const left = document.createElement('div'); left.className='row'; left.style.position='absolute'; left.style.top='20px'; left.style.left='50%'; left.style.transform='translateX(-50%)';
+          const varBox = document.createElement('div'); varBox.className='box'; varBox.textContent='x = 5';
+          left.appendChild(varBox); scene.appendChild(left);
+
+          const info = document.createElement('div'); info.className='row'; info.style.position='absolute'; info.style.bottom='40px'; info.style.left='50%'; info.style.transform='translateX(-50%)';
+          const res = document.createElement('div'); res.className='box'; res.textContent='x'; info.appendChild(res); scene.appendChild(info);
+
+          // animate += and *=
+          setTimeout(()=>{varBox.textContent='x = 5'; res.textContent='5'},300);
+          setTimeout(()=>{varBox.textContent='x += 3'; res.textContent='8'},1400);
+          setTimeout(()=>{varBox.textContent='x *= 2'; res.textContent='16'},2600);
+        }
+      },
+
+      comparison:{
+        title:'Comparison operators',
+        explain:'Compare values and return True or False. Used in if statements and conditions.',
+        code:`a = 4\nb = 7\nprint(a == b)  # False\nprint(a != b)  # True\nprint(a < b)   # True\nprint(a >= 4)  # True`,
+        render(scene){
+          scene.innerHTML='';
+          const A = document.createElement('div'); A.className='box'; A.textContent='4'; A.style.position='absolute'; A.style.left='26%'; A.style.top='40%';
+          const op = document.createElement('div'); op.className='box'; op.textContent='=='; op.style.position='absolute'; op.style.left='50%'; op.style.top='40%';
+          const B = document.createElement('div'); B.className='box'; B.textContent='7'; B.style.position='absolute'; B.style.left='74%'; B.style.top='40%';
+          const badge = document.createElement('div'); badge.className='badge false'; badge.textContent='False'; badge.style.position='absolute'; badge.style.left='50%'; badge.style.top='18%'; badge.style.transform='translateX(-50%)';
+          scene.append(A,op,B,badge);
+
+          setTimeout(()=>{op.textContent='!='; badge.className='badge true'; badge.textContent='True'},1400);
+          setTimeout(()=>{op.textContent='<'; badge.className='badge true'; badge.textContent='True'},2600);
+        }
+      },
+
+      logical:{
+        title:'Logical operators',
+        explain:'Combine boolean expressions: and (both true), or (at least one true), not (negate).',
+        code:`a = True\nb = False\nprint(a and b)  # False\nprint(a or b)   # True\nprint(not b)    # True`,
+        render(scene){
+          scene.innerHTML='';
+          const left = document.createElement('div'); left.style.position='absolute'; left.style.left='20%'; left.style.top='26%'; left.innerHTML=`<div class='box'>True</div>`;
+          const right = document.createElement('div'); right.style.position='absolute'; right.style.right='20%'; right.style.top='26%'; right.innerHTML=`<div class='box'>False</div>`;
+          const central = document.createElement('div'); central.style.position='absolute'; central.style.left='50%'; central.style.top='60%'; central.style.transform='translateX(-50%)'; central.innerHTML=`<div class='box'>Result</div>`;
+          scene.append(left,right,central);
+
+          // animate and -> False then or -> True
+          const label = document.createElement('div'); label.className='float'; label.textContent='and'; scene.append(label);
+          setTimeout(()=>{central.querySelector('.box').textContent='False'; label.textContent='or'},1400);
+          setTimeout(()=>{central.querySelector('.box').textContent='True'; label.textContent='not (negate)';},2800);
+        }
+      },
+
+      bitwise:{
+        title:'Bitwise operators',
+        explain:'Operate at bit level. Example: 5 & 3 -> compare binary bits, 1 where both have 1.',
+        code:`a = 5   # 0b0101\nb = 3   # 0b0011\nprint(a & b)  # 1 (0b0001)\nprint(a | b)  # 7 (0b0111)\nprint(a ^ b)  # 6 (0b0110)\nprint(a << 1) # 10 (0b1010)\nprint(a >> 1) # 2 (0b0010)`,
+        render(scene){
+          scene.innerHTML='';
+          // show bits for 5 and 3
+          const top = document.createElement('div'); top.style.position='absolute'; top.style.top='18%'; top.style.left='50%'; top.style.transform='translateX(-50%)';
+          const bitsA = document.createElement('div'); bitsA.className='bits'; [0,1,0,1].forEach(b=>{const el=document.createElement('div');el.className='bit';el.textContent=b; bitsA.append(el)});
+          const bitsB = document.createElement('div'); bitsB.className='bits'; [0,0,1,1].forEach(b=>{const el=document.createElement('div');el.className='bit';el.textContent=b; bitsB.append(el)});
+          const opLabel = document.createElement('div'); opLabel.className='float'; opLabel.textContent='&';
+          bitsA.style.marginBottom='10px'; bitsB.style.marginTop='40px';
+          scene.append(bitsA, bitsB, opLabel);
+
+          const result = document.createElement('div'); result.className='row'; result.style.position='absolute'; result.style.bottom='30px'; result.style.left='50%'; result.style.transform='translateX(-50%)';
+          const resBox=document.createElement('div'); resBox.className='box'; resBox.textContent='result'; result.append(resBox); scene.append(result);
+
+          // animate & then | then ^ then shifts
+          const ops=['&','|','^','<<','>>']; let i=0;
+          function step(){
+            opLabel.textContent=ops[i];
+            if(ops[i]=='&') resBox.textContent='0001 (1)';
+            if(ops[i]=='|') resBox.textContent='0111 (7)';
+            if(ops[i]=='^') resBox.textContent='0110 (6)';
+            if(ops[i]=='<<') resBox.textContent='1010 (10)';
+            if(ops[i]=='>>') resBox.textContent='0010 (2)';
+            i++; if(i<ops.length) setTimeout(step,1400);
+          }
+          setTimeout(step,400);
+        }
+      },
+
+      identity:{
+        title:'Identity operators',
+        explain:'"is" checks if two names point to the same object (same memory). Not about equality of value.',
+        code:`a = [1,2]\nb = a\nc = [1,2]\nprint(a is b)  # True\nprint(a is c)  # False\nprint(a == c)  # True (values equal)`,
+        render(scene){
+          scene.innerHTML='';
+          const boxA=document.createElement('div');boxA.className='box';boxA.textContent='a -> [1,2]';boxA.style.position='absolute';boxA.style.left='18%';boxA.style.top='40%';
+          const boxB=document.createElement('div');boxB.className='box';boxB.textContent='b -> a';boxB.style.position='absolute';boxB.style.left='50%';boxB.style.top='12%';
+          const boxC=document.createElement('div');boxC.className='box';boxC.textContent='c -> [1,2]';boxC.style.position='absolute';boxC.style.left='82%';boxC.style.top='40%';
+          scene.append(boxA,boxB,boxC);
+          const res=document.createElement('div');res.className='badge true';res.textContent='a is b';res.style.position='absolute';res.style.left='50%';res.style.bottom='10%';res.style.transform='translateX(-50%)';
+          scene.append(res);
+          setTimeout(()=>{res.className='badge false';res.textContent='a is c'},1800);
+        }
+      },
+
+      membership:{
+        title:'Membership operators',
+        explain:'Check if a value is in a container: in, not in.',
+        code:`fruits = ['apple','banana']\nprint('apple' in fruits)     # True\nprint('cherry' not in fruits) # True`,
+        render(scene){
+          scene.innerHTML='';
+          const list = ['apple','banana','cherry'];
+          const shelf = document.createElement('div'); shelf.style.position='absolute'; shelf.style.left='12%'; shelf.style.top='22%';
+          list.forEach((it,i)=>{const el=document.createElement('div');el.className='box';el.style.margin='6px';el.textContent=it;shelf.appendChild(el)});
+          const query=document.createElement('div');query.className='box';query.textContent="'apple'";query.style.position='absolute';query.style.right='12%';query.style.top='38%';
+          const res=document.createElement('div');res.className='badge true';res.textContent='in';res.style.position='absolute';res.style.left='50%';res.style.bottom='12%';res.style.transform='translateX(-50%)';
+          scene.append(shelf,query,res);
+          setTimeout(()=>{query.textContent="'mango'"; res.className='badge false'; res.textContent='not in'},1400);
+        }
+      },
+
+      ternary:{
+        title:'Ternary (conditional expression)',
+        explain:'Compact if-else in one line: x if condition else y',
+        code:`age=20\nstatus = 'adult' if age >= 18 else 'minor'\nprint(status)  # adult`,
+        render(scene){
+          scene.innerHTML='';
+          const cond=document.createElement('div');cond.className='box';cond.textContent='age >= 18 ?';cond.style.position='absolute';cond.style.left='50%';cond.style.top='24%';cond.style.transform='translateX(-50%)';
+          const left=document.createElement('div');left.className='box';left.textContent="'adult'";left.style.position='absolute';left.style.left='18%';left.style.top='60%';
+          const right=document.createElement('div');right.className='box';right.textContent="'minor'";right.style.position='absolute';right.style.right='18%';right.style.top='60%';
+          const out=document.createElement('div');out.className='box';out.textContent="'adult'";out.style.position='absolute';out.style.left='50%';out.style.bottom='8%';out.style.transform='translateX(-50%)';
+          scene.append(cond,left,right,out);
+          // animate switching of age
+          setTimeout(()=>{out.textContent="'minor'";cond.textContent='age = 15 ?'},2000);
+        }
+      }
+    };
+
+    // helpers
+    const sceneEl = document.getElementById('scene');
+    const groupTitle = document.getElementById('groupTitle');
+    const explainEl = document.getElementById('explain');
+    const pycode = document.getElementById('pycode');
+
+    document.querySelectorAll('.op').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const g = el.dataset.group;
+        showGroup(g);
+      });
+    });
+
+    function showGroup(key){
+      const g = groups[key];
+      groupTitle.textContent = g.title;
+      explainEl.textContent = g.explain;
+      pycode.textContent = g.code;
+      // prepare scene; call render after small delay
+      sceneEl.innerHTML = '';
+      setTimeout(()=>{ g.render(sceneEl); }, 120);
+      // set selected style
+      document.querySelectorAll('.op').forEach(x=>x.style.outline='');
+      document.querySelector(`[data-group="${key}"]`).style.outline='2px solid rgba(96,165,250,0.12)';
+    }
+
+    document.getElementById('runBtn').addEventListener('click', ()=>{
+      // try to re-run current group's render
+      const title = groupTitle.textContent;
+      const key = Object.keys(groups).find(k=>groups[k].title===title);
+      if(key) groups[key].render(sceneEl);
+    });
+    document.getElementById('resetBtn').addEventListener('click', ()=>{sceneEl.innerHTML='';groupTitle.textContent='Choose a group →';explainEl.textContent='Click an operator group to see a visual explanation and example code.';pycode.textContent='# Select an operator group on the right to see example code';document.querySelectorAll('.op').forEach(x=>x.style.outline='');});
+
+    // initial hint animation
+    setTimeout(()=>{document.querySelector('.op').classList.add('pulse')},900);
+  </script>
+</body>
+</html>
