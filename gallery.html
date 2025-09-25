@@ -1,62 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Rotating Image Gallery</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Gallery</title>
 
-    <link rel="stylesheet" href="styles/gallery.css">
-    <link rel="shortcut icon" type="image/png" href="../../assets/favicon.png">
-    <link rel="stylesheet" href="styles/index.css">
-</head>
-<body>
-    
-    <nav>
+    <link rel="stylesheet" href="styles/gallery.css" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="../../assets/favicon.png"
+    />
+    <link rel="stylesheet" href="styles/index.css" />
+    <style>
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        position: relative;
+      }
+
+      #top-navbar a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: var(--text-color);
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      #top-navbar a:hover {
+        color: var(--hover-color);
+      }
+
+      #theme-toggle {
+        font-size: 1.4rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-color);
+      }
+
+      .gallery-title {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <!-- Header with Navbar + Theme Toggle -->
+    <!-- <header>
+      <nav id="top-navbar">
         <a href="blog.html">Blog</a>
-        <!-- <a href="projects.html">Projects</a> -->
         <a href="about.html">About</a>
         <a href="gallery.html">Gallery</a>
-    </nav>
-    
+      </nav>
+      <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+    </header> -->
+
     <canvas id="bg-canvas"></canvas>
 
+    <!-- Page Title -->
+    <!-- <h1 class="gallery-title">Image Gallery</h1> -->
 
-    <h1>Image Gallery</h1>
+    <!-- Rotating Image Gallery -->
     <div class="box">
-        <span style="--i:1">
-            <img src="images/photo.jpg" alt="Mohana_sunset_trees">
-        </span>
-        <span style="--i:2">
-            <img src="images/sarun2.jpeg" alt="plane_sky">
-        </span>
-        <span style="--i:3">
-            <img src="images/sarun3.jpeg" alt="Rangoli_design">
-        </span>
-        <span style="--i:4">
-            <img src="assets/sunset_at_saltlake.jpg" alt="sunset_at_saltlake">
-        </span>
-        <span style="--i:5">
-            <img src="assets/taxi_side.jpg" alt="taxi_side">
-        </span>
-        <span style="--i:6">
-            <img src="assets/udaypur_paraglydig.jpg" alt="udaypur_paraglydig">
-        </span>
-        <span style="--i:7">
-            <img src="assets/Water_drops_on_leaves.jpg" alt="Water_drops_on_leaves">
-        </span>
-        <span style="--i:8">
-            <img src="assets/White_flower.jpg"  alt="White_flower ">
-        </span>
-
+      <span style="--i: 1">
+        <img src="images/photo.jpg" alt="Mohana_sunset_trees" />
+      </span>
+      <span style="--i: 2">
+        <img src="images/sarun2.jpeg" alt="plane_sky" />
+      </span>
+      <span style="--i: 3">
+        <img src="images/sarun3.jpeg" alt="Rangoli_design" />
+      </span>
+      <span style="--i: 4">
+        <img src="images/sarun4.jpeg" alt="sunset_at_saltlake" />
+      </span>
+      <span style="--i: 5">
+        <img src="images/photo.jpg" alt="taxi_side" />
+      </span>
+      <span style="--i: 6">
+        <img src="images/sarun2.jpeg" alt="udaypur_paraglydig" />
+      </span>
+      <span style="--i: 7">
+        <img
+          src="images/sarun3.jpeg"
+          alt="Water_drops_on_leaves"
+        />
+      </span>
+      <span style="--i: 8">
+        <img src="images/sarun4.jpeg" alt="White_flower" />
+      </span>
     </div>
 
     <audio id="bg-music" autoplay loop>
-        <source src="music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+      <source src="music.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
     </audio>
 
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="scripts/index.js"></script>
-    
-</body>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      const themeToggle = document.getElementById("theme-toggle");
+      const body = document.body;
+
+      // Load saved theme
+      if (localStorage.getItem("theme")) {
+        body.setAttribute("data-theme", localStorage.getItem("theme"));
+        themeToggle.textContent =
+          body.getAttribute("data-theme") === "dark" ? "🌙" : "☀️";
+      }
+
+      // Toggle on click
+      themeToggle.addEventListener("click", () => {
+        const current = body.getAttribute("data-theme");
+        const newTheme = current === "dark" ? "light" : "dark";
+        body.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+      });
+    </script>
+  </body>
 </html>

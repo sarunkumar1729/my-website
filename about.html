@@ -5,21 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles/index.css">
   <title>techwithsarun</title>
+  <style>
+    /* Responsive About Section */
+    .about {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 3rem 1rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .about img {
+      width: 280px;
+      height: auto;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .about-text {
+      flex: 1;
+      min-width: 280px;
+    }
+    .about-text h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .about-text p {
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .about {
+        flex-direction: column;
+        text-align: center;
+      }
+      .about img {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
 </head>
 <body data-theme="dark">
   <canvas id="bg-canvas"></canvas>
 
-  <header>
-    <button id="menu-toggle" aria-label="Open menu">☰</button>
-    <h1>Sarunkumar</h1>
-    <p>Full-Stack Developer | Data Analyst | ML Enthusiast</p>
-    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
-  </header>
+
 
   <!-- Desktop Navbar -->
   <nav id="top-navbar">
     <a href="blog.html">Blog</a>
     <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
     <a href="gallery.html">Gallery</a>
   </nav>
 
@@ -28,15 +65,41 @@
     <button id="close-sidebar">&times;</button>
     <a href="blog.html">Blog</a>
     <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
     <a href="gallery.html">Gallery</a>
   </nav>
 
+  <header>
+    <button id="menu-toggle" aria-label="Open menu">☰</button>
+    <h1>Sarunkumar</h1>
+    <p>Full-Stack Developer | Data Analyst | ML Enthusiast</p>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+  </header>
+
   <div class="container">
-    <section>
-      <h2>Welcome</h2>
-      <p>
-        Hi! I’m Sarunkumar V V. Explore my portfolio to see my projects, blogs, and journey in tech.
-      </p>
+
+
+    <!-- About Me Section -->
+    <section class="about" id="about">
+      <img src="images/photo.jpg" alt="Sarunkumar Profile Picture">
+      <div class="about-text">
+        <h2>About Me</h2>
+        <p>
+          I am a passionate Full-Stack Developer with expertise in Python, Django, React, 
+          and modern web technologies. Alongside development, I mentor aspiring data analysts 
+          and enjoy working on Machine Learning projects. My goal is to bridge real-world problems 
+          with innovative, scalable solutions.
+        </p>
+        <p>
+          I am also a graduate in Physics, which strengthens my analytical and problem-solving 
+          abilities, and helps me apply scientific thinking in technology and data-driven projects.
+        </p>
+        <p>
+          When I’m not coding, I love mentoring, exploring AI advancements, and sharing knowledge 
+          through blogs and projects.
+        </p>
+        
+      </div>
     </section>
   </div>
 
