@@ -6,20 +6,27 @@
   <link rel="stylesheet" href="styles/index.css">
   <title>techwithsarun</title>
 </head>
-<body>
+<body data-theme="dark">
   <canvas id="bg-canvas"></canvas>
 
   <header>
+    <button id="menu-toggle" aria-label="Open menu">☰</button>
     <h1>Sarunkumar</h1>
     <p>Full-Stack Developer | Data Analyst | ML Enthusiast</p>
-    <button id="theme-toggle" aria-label="Toggle theme">
-      <span class="icon"></span>
-    </button>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
   </header>
 
-  <nav>
+  <!-- Desktop Navbar -->
+  <nav id="top-navbar">
     <a href="blog.html">Blog</a>
-    <!-- <a href="projects.html">Projects</a> -->
+    <a href="about.html">About</a>
+    <a href="gallery.html">Gallery</a>
+  </nav>
+
+  <!-- Mobile/Tablet Sidebar -->
+  <nav id="sidebar">
+    <button id="close-sidebar">&times;</button>
+    <a href="blog.html">Blog</a>
     <a href="about.html">About</a>
     <a href="gallery.html">Gallery</a>
   </nav>
@@ -40,5 +47,36 @@
   <!-- Three.js -->
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <script src="scripts/index.js"></script>
+
+  <script>
+    // Sidebar toggle
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menu-toggle");
+    const closeSidebar = document.getElementById("close-sidebar");
+
+    menuToggle.addEventListener("click", () => sidebar.classList.add("open"));
+    closeSidebar.addEventListener("click", () => sidebar.classList.remove("open"));
+    document.querySelectorAll("#sidebar a").forEach(link => {
+      link.addEventListener("click", () => sidebar.classList.remove("open"));
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById("theme-toggle");
+    const body = document.body;
+
+    // Load saved theme
+    if(localStorage.getItem("theme")) {
+      body.setAttribute("data-theme", localStorage.getItem("theme"));
+      themeToggle.textContent = body.getAttribute("data-theme") === "dark" ? "🌙" : "☀️";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const current = body.getAttribute("data-theme");
+      const newTheme = current === "dark" ? "light" : "dark";
+      body.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    });
+  </script>
 </body>
 </html>

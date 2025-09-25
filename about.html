@@ -1,223 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/index.css" />
-    <title>About - techwithsarun</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/index.css">
+  <title>techwithsarun</title>
+</head>
+<body data-theme="dark">
+  <canvas id="bg-canvas"></canvas>
 
-    <style>
-      /* Default Dark Theme */
-      body {
-        background: #111;
-        color: #fff;
-      }
+  <header>
+    <button id="menu-toggle" aria-label="Open menu">☰</button>
+    <h1>Sarunkumar</h1>
+    <p>Full-Stack Developer | Data Analyst | ML Enthusiast</p>
+    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+  </header>
 
-      /* Light Theme */
-      body.light {
-        background: #f9f9f9;
-        color: #111;
-      }
-      body.light nav a {
-        color: #111;
-      }
-      body.light section {
-        background: rgba(0, 0, 0, 0.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-      }
-      body.light nav a:hover {
-        color: #ff9800;
-      }
-      body.light a {
-        color: #111;
-      }
-      body.light footer {
-        opacity: 0.8;
-      }
+  <!-- Desktop Navbar -->
+  <nav id="top-navbar">
+    <a href="blog.html">Blog</a>
+    <a href="about.html">About</a>
+    <a href="gallery.html">Gallery</a>
+  </nav>
 
-      /* Theme Toggle Button */
-      #theme-toggle {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        width: 42px;
-        height: 42px;
-        border: none;
-        border-radius: 50%;
-        background: #222;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-      #theme-toggle .icon {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: #ffeb3b; /* Sun */
-        box-shadow: 0 0 10px #ffeb3b;
-        transition: all 0.4s ease;
-      }
-      body.light #theme-toggle {
-        background: #ddd;
-      }
-      body.light #theme-toggle .icon {
-        background: #333; /* Moon */
-        box-shadow: inset -4px -2px 0px 2px #fff;
-        transform: rotate(-25deg);
-      }
-      .profile-img {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%; /* Makes it circular */
-        object-fit: cover;
-        margin: 15px 0;
-        border: 3px solid white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
-      }
+  <!-- Mobile/Tablet Sidebar -->
+  <nav id="sidebar">
+    <button id="close-sidebar">&times;</button>
+    <a href="blog.html">Blog</a>
+    <a href="about.html">About</a>
+    <a href="gallery.html">Gallery</a>
+  </nav>
 
-      body.light .profile-img {
-        border: 3px solid #333;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-      #typewriter {
-        border-right: 2px solid #ff9800;
-        white-space: nowrap;
-        overflow: hidden;
-        display: inline-block;
-        animation: blinkCursor 0.7s infinite;
-      }
+  <div class="container">
+    <section>
+      <h2>Welcome</h2>
+      <p>
+        Hi! I’m Sarunkumar V V. Explore my portfolio to see my projects, blogs, and journey in tech.
+      </p>
+    </section>
+  </div>
 
-      @keyframes blinkCursor {
-        0% {
-          border-color: transparent;
-        }
-        50% {
-          border-color: #ff9800;
-        }
-        100% {
-          border-color: transparent;
-        }
-      }
+  <footer>
+    <p>&copy; 2025 Sarun Kumar | All Rights Reserved</p>
+  </footer>
 
-      .about-section {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-        margin: 40px 0;
-        flex-wrap: wrap; /* Makes it responsive */
-      }
+  <!-- Three.js -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="scripts/index.js"></script>
 
-      .about-image {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-      }
+  <script>
+    // Sidebar toggle
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menu-toggle");
+    const closeSidebar = document.getElementById("close-sidebar");
 
-      .about-text {
-        flex: 2;
-        min-width: 250px;
-      }
+    menuToggle.addEventListener("click", () => sidebar.classList.add("open"));
+    closeSidebar.addEventListener("click", () => sidebar.classList.remove("open"));
+    document.querySelectorAll("#sidebar a").forEach(link => {
+      link.addEventListener("click", () => sidebar.classList.remove("open"));
+    });
 
-      .profile-img {
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #ff9800;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
-      }
+    // Theme toggle
+    const themeToggle = document.getElementById("theme-toggle");
+    const body = document.body;
 
-      body.light .profile-img {
-        border: 3px solid #333;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="bg-canvas"></canvas>
+    // Load saved theme
+    if(localStorage.getItem("theme")) {
+      body.setAttribute("data-theme", localStorage.getItem("theme"));
+      themeToggle.textContent = body.getAttribute("data-theme") === "dark" ? "🌙" : "☀️";
+    }
 
-    <header>
-      <h1>About Me</h1>
-      <button id="theme-toggle" aria-label="Toggle theme">
-        <span class="icon"></span>
-      </button>
-    </header>
-
-    <nav>
-      <a href="blog.html">Blog</a>
-      <!-- <a href="projects.html">Projects</a> -->
-      <a href="about.html">About</a>
-      <a href="gallery.html">Gallery</a>
-    </nav>
-
-    <div class="container">
-      <section class="about-section">
-        <div class="about-image">
-          <img
-            src="images/photo.jpg"
-            alt="Sarunkumar V V"
-            class="profile-img"
-          />
-        </div>
-        <div class="about-text">
-          <h2>Who I Am</h2>
-          <p>
-            <span id="typewriter"></span>
-          </p>
-        </div>
-      </section>
-    </div>
-
-    <footer>
-      <p>&copy; 2025 Sarun Kumar | All Rights Reserved</p>
-    </footer>
-
-    <!-- Three.js -->
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <script src="scripts/index.js"></script>
-    <script>
-      // === THEME TOGGLE ===
-      const toggleBtn = document.getElementById("theme-toggle");
-
-      // If button exists on page
-      if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-          document.body.classList.toggle("light");
-
-          // Save theme preference
-          if (document.body.classList.contains("light")) {
-            localStorage.setItem("theme", "light");
-          } else {
-            localStorage.setItem("theme", "dark");
-          }
-        });
-      }
-
-      // Load saved theme on page load
-      if (localStorage.getItem("theme") === "light") {
-        document.body.classList.add("light");
-      }
-    </script>
-
-    <script>
-      const text =
-        "I’m Sarunkumar V V, a Python full-stack developer and mentor specializing in data analytics and ML. I love coding, mentoring, and building real-world solutions.";
-      const typewriterEl = document.getElementById("typewriter");
-
-      let i = 0;
-      function typeEffect() {
-        if (i < text.length) {
-          typewriterEl.textContent += text.charAt(i);
-          i++;
-          setTimeout(typeEffect, 50); // typing speed in ms
-        }
-      }
-
-      window.onload = typeEffect;
-    </script>
-  </body>
+    themeToggle.addEventListener("click", () => {
+      const current = body.getAttribute("data-theme");
+      const newTheme = current === "dark" ? "light" : "dark";
+      body.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    });
+  </script>
+</body>
 </html>
